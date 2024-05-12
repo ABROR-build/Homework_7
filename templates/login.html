@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+    .register {
+        margin-left: 100px;
+        font-family: "Noto Sans";
+    }
+
+  .labels{
+  color: #8d8d8d;
+  top: 10px;
+  left: 55px;
+  background: #ffffff;
+  transition: 300ms;
+  transform: translate(-50%, -50%);
+  }
+
+  .button {
+  width: 100%;
+  }
+</style>
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Registration</title>
+</head>
+<body>
+<div class="register">
+    <h1>Login</h1>
+    <form method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
+</div>
+
+
+</body>
+</html>
