@@ -31,3 +31,15 @@ class Cars(models.Model):
 
     def __str__(self):
         return self.model
+
+
+class Comments(models.Model):
+    user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
+    car = models.ForeignKey(Cars, on_delete=models.CASCADE)
+    comment = models.TextField()
+
+    class Meta:
+        db_table = 'Comments'
+
+    def __str__(self):
+        return f"{self.user.username} {self.car.model}"
