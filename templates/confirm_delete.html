@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form method="post">{% csrf_token %}
+        <p>Do you want to delete ? </p>
+        <button class="btn btn-info ml2" type="submit">Yes</button>
+    </form>
+
+    <a href="{% url 'dashboard' %}">
+        <button class="btn btn-info ml2">No</button>
+    </a>
+{% endblock content %}
