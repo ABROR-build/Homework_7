@@ -1,12 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from . import models
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .forms import AddCommentForm
+from .forms import AddCommentForm, EditCommentForm, EditProfileForm
 
 
+# cars
 class ListCars(ListView):
     model = models.Cars
     template_name = 'dashboard.html'
@@ -57,6 +58,7 @@ class DeleteCar(UserPassesTestMixin, LoginRequiredMixin, DeleteView):
         return obj.owner == self.request.user
 
 
+# comments
 class AddComment(LoginRequiredMixin, View):
     def get(self, request, pk):
         cars = models.Cars.objects.get(pk=pk)
@@ -81,16 +83,30 @@ class AddComment(LoginRequiredMixin, View):
             return redirect('CarDetail', pk=pk)
 
 
-class EditComment(UserPassesTestMixin, LoginRequiredMixin, UpdateView):
-    model = models.Comments
-    fields = ['comment']
-    template_name = "edit_comment.html"
+class EditComment(LoginRequiredMixin, UpdateView):
+    def get(self, request, pk):
+        comment = models.Comments.objects.get(pk=pk)
+        edit_comment_form = EditCommentForm(instance=comment)
+        context = {
+            'comment': comment,
+            'edit_comment_form': edit_comment_form
+        }
+        return render(request, 'edit_comment.html', context=context)
 
-    def test_func(self):
-        obj = self.get_object()
-        return obj.user == self.request.user
-
-    success_url = reverse_lazy('dashboard')
+    def post(self, request, pk):
+        comment = models.Comments.objects.get(pk=pk)
+        edit_comment_form = EditCommentForm(request.POST, instance=comment)
+        if edit_comment_form.is_valid():
+            edit_comment_form = edit_comment_form.save(commit=False)
+            edit_comment_form.car_id = comment.car_id
+            edit_comment_form.save()
+            return redirect('CarDetail', pk=comment.car_id)
+        else:
+            context = {
+                'edit_comment_form': edit_comment_form
+            }
+            print('======================> form invalid <=======================')
+            return render(request, 'edit_comment.html', context=context)
 
 
 class DeleteComment(UserPassesTestMixin, LoginRequiredMixin, DeleteView):
@@ -101,3 +117,35 @@ class DeleteComment(UserPassesTestMixin, LoginRequiredMixin, DeleteView):
     def test_func(self):
         obj = self.get_object()
         return obj.user == self.request.user
+
+
+# profile
+class MyProfile(View):
+    def get(self, request, pk):
+        my_profile = models.Accounts.objects.get(pk=pk)
+        context = {
+            'my_profile': my_profile
+        }
+        return render(request, 'profile.html', context=context)
+
+
+class EditProfile(UpdateView):
+    model = models.Accounts
+    template_name = 'profile_update.html'
+    fields = ('password', 'username', 'bio', 'age', 'profile_picture')
+
+
+def edit_profile(request, pk):
+    objects = get_object_or_404(models.Accounts, pk=pk)
+    if request.method == 'POST' or 'GET':
+        form = EditProfileForm(request.POST, instance=objects)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+        else:
+            form = EditProfileForm(instance=objects)
+
+            context = {
+                'form': form
+            }
+            return render(request, 'profile_update.html', context=context)

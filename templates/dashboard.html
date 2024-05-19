@@ -1,8 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+    <style>
+        img {
+              border: 1px solid #ddd;
+              border-radius: 4px;
+              padding: 5px;
+              width: 300px;
+              object-fit: contain;
+            }
+    </style>
     {% for car in cars %}
-        <img src="{{ car.image.url }}" height="300"><br>
+        <img src="{{ car.image.url }}"><br>
         <h3>Model: {{ car.model }}</h3>
         <p>Company: {{ car.company }}</p>
         <p>Price: {{ car.price }}</p>

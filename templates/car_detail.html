@@ -1,11 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <a href="{% url 'edit_car' car.pk %}">Edit</a>
-    <a href="{% url 'delete_car' car.pk %}">Delete</a>
-    <a href="{% url 'dashboard' %}">Homepage</a><br><br>
 
-    <img src="{{ car.image.url }}" height="300"><br>
+    <style>
+        img {
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          padding: 5px;
+          width: 300px;
+        }
+    </style>
+    {% if request.user == car.owner %}
+        <a href="{% url 'edit_car' car.pk %}">Edit</a>
+        <a href="{% url 'delete_car' car.pk %}">Delete</a>
+    {% endif %}
+        <a href="{% url 'dashboard' %}">Homepage</a><br><br>
+
+
+    <img src="{{ car.image.url }}"><br>
     <h1>{{ car.model }}</h1>
     <p>Company:{{ car.company }}</p>
     <p>Owner:{{ car.owner }}</p>
@@ -20,9 +32,11 @@
     <a href="{% url 'add_comment' car.pk %}">Add comment</a>
 
     {% for comment in comments %}
-        <h5>{{ comment.user.username }}</h5>
-        <a href="{% url 'edit_comment' comment.pk %}">Edit comment</a>
-        <a href="{% url 'delete_comment' comment.pk %}">Delete</a>
-        <p>{{ comment.comment }}</p>
+        {% if request.user == comment.user %}
+            <h5>{{ comment.user.username }}</h5>
+            <a href="{% url 'edit_comment' comment.pk %}">Edit</a>
+            <a href="{% url 'delete_comment' comment.pk %}">Delete</a>
+            <p>{{ comment.comment }}</p>
+        {% endif %}
     {% endfor %}
 {% endblock content %}

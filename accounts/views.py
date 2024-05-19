@@ -56,3 +56,5 @@ class Logout(View, LoginRequiredMixin):
     def get(self, request):
         logout(request)
         return redirect('dashboard')
+
+# profile

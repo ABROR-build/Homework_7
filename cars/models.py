@@ -34,6 +34,7 @@ class Cars(models.Model):
 
 
 class Comments(models.Model):
+    object = None
     user = models.ForeignKey(Accounts, on_delete=models.CASCADE)
     car = models.ForeignKey(Cars, on_delete=models.CASCADE)
     comment = models.TextField()
