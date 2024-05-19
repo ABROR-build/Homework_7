@@ -17,6 +17,6 @@ urlpatterns = [
 
     # profile
     path('my_profile/<int:pk>/', views.MyProfile.as_view(), name='MyProfile'),
-    path('my_profile/update/<int:pk>/', views.edit_profile, name='my_profile_update')
+    path('my_profile/update/<int:pk>/', views.EditProfile.as_view(), name='my_profile_update')
 
 ]

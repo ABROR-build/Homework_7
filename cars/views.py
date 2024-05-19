@@ -134,18 +134,4 @@ class EditProfile(UpdateView):
     template_name = 'profile_update.html'
     fields = ('password', 'username', 'bio', 'age', 'profile_picture')
 
-
-def edit_profile(request, pk):
-    objects = get_object_or_404(models.Accounts, pk=pk)
-    if request.method == 'POST' or 'GET':
-        form = EditProfileForm(request.POST, instance=objects)
-        if form.is_valid():
-            form.save()
-            return redirect('dashboard')
-        else:
-            form = EditProfileForm(instance=objects)
-
-            context = {
-                'form': form
-            }
-            return render(request, 'profile_update.html', context=context)
+    success_url = reverse_lazy('dashboard')
